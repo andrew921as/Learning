@@ -13,8 +13,8 @@ const processRequest = (req, res) =>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.end(JSON.stringify({users: [{name: 'John Doe', age: 30}]}));
-    }else if (req-url === '/imagenBonita') { 
-        fs.readFile('./landscape.jpg', (err, data) => {
+    }else if (req.url === '/imagenbonita') { 
+        fs.readFile('./landScape.jpg', (err, data) => {
             if (err){
                 res.statusCode = 500;
                 res.end('Error interno');
