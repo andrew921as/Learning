@@ -46,6 +46,17 @@ app.post('/movies', (req,res)=>{ // Ruta /movies
 	res.status(201).json(newMovie) // retornamos la nueva movie para actualizar el front
 })
 
+app.patch('/movies/:id', (req, res) => { // Ruta /movies/:id
+	const { id } = req.params // obtenemos la id de la movie a buscar
+	const movieIndex = movies.findIndex(movie => movie.id === id)
+
+	if (movieIndex < 0){
+		return res.status(404).json({message:'Movie not found'})
+	} 
+
+	const movie = movies[movieIndex]
+})
+
 const PORT = process.env.PORT ?? 1234; // Puerto
 
 app.listen(PORT, () => { // Escucha en el puerto 1234	

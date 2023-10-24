@@ -25,4 +25,6 @@ function validateMovie(object){
 	return movieSchema.sarveParse(object)
 }
 
+
+
 module.exports = {validateMovie}
