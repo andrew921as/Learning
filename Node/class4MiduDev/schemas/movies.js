@@ -1,4 +1,4 @@
-const z = require('zod')// importamos zod -> CommonJS (una libreria para validar el body de la request)
+import z from 'zod'// importamos zod -> CommonJS (una libreria para validar el body de la request)
 
 const movieSchema = z.object({
 		title:z.string({
@@ -21,15 +21,11 @@ const movieSchema = z.object({
 		).min(1).max(5)
 });
 
-function validateMovie(input){
+export function validateMovie(input){
 	return movieSchema.safeParse(input)
 }
 
-function validatePartialMovie(input){
+export function validatePartialMovie(input){
 	return movieSchema.partial().safeParse(input)
 }
 
-module.exports = {
-	validateMovie, 
-	validatePartialMovie
-	}

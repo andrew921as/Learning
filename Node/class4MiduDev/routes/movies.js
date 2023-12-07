@@ -1,15 +1,14 @@
-const express = require('express'); // importamos express -> CommonJS (un framework para crear servidores)
-const crypto = require('node:crypto'); // importamos crypto -> CommonJS (una libreria para generar ids random)
-const movies = require('./movies.json'); // importamos el archivo movies.json
-const { validateMovie, validatePartialMovie } = require('./schemas/movies');
+import randomUUID	from 'node:crypto'
+import { Router } from 'express';
 
+import { validateMovie, validatePartialMovie } from "../schemas/movies.js";
+import { readJson } from "../utils.js";
 
-const app = express();
-app.disable('x-powered-by'); // Deshabilita el header X-Powered-By: Express
-app.use(express.json()); // Middleware para parsear el body de la request a JSON
+export const moviesRouter = Router()
+movies = readJson('./movies.json'); // importamos las movies con la funcion require que cree
 
-
-app.get('/movies', (req, res) => { // Ruta /movies
+moviesRouter.get('/', (req, res) => { 
+	// Ruta /movies
 	const {genre} = req.query // obtenemos el query param genre
 	if (genre) { // si existe el query param genre	
 		const filteredMovies = movies.filter(
@@ -17,10 +16,11 @@ app.get('/movies', (req, res) => { // Ruta /movies
 		) 
 		return res.json(filteredMovies) // retornamos las movies filtradas
 	}
-	res.json(movies)
+	res.json(movies)// Ruta /movies
 })
 
-app.get('/movies/:id', (req, res) => { // Ruta /movies/:id
+
+moviesRouter.get('/:id', (req, res) => { // Ruta /movies/:id
 	const { id } = req.params // obtenemos la id de la movie a buscar
 	const movie = movies.find(movie => movie.id === id) // buscamos la movie por id
 	if (movie) return res.json(movie) // si existe la movie, la retornamos
@@ -28,7 +28,7 @@ app.get('/movies/:id', (req, res) => { // Ruta /movies/:id
 	res.status(404).json({ message : 'Movie not found'})
 })
 
-app.post('/movies', (req,res)=>{ // Ruta /movies
+moviesRouter.post('/', (req,res)=>{ // Ruta /movies
 	
 	const result = validateMovie(req.body) // validamos el body de la request
 	
@@ -37,7 +37,7 @@ app.post('/movies', (req,res)=>{ // Ruta /movies
 	}
 
 		const newMovie ={
-			id: crypto.randomUUID(), // generamos un id random
+			id: randomUUID(), // generamos un id random
 			...result.data
 		}
 
@@ -46,9 +46,7 @@ app.post('/movies', (req,res)=>{ // Ruta /movies
 	res.status(201).json(newMovie) // retornamos la nueva movie para actualizar el front
 })
 
-//patch, modificar una propiedad de una movie
-
-app.patch('/movies/:id', (req, res) => { // Ruta /movies/:id
+moviesRouter.patch('/:id', (req, res) => { // Ruta /movies/:id
 	const result = validatePartialMovie(req.body) // validamos el body de la request
 
 	if (result.error) {
@@ -71,9 +69,3 @@ app.patch('/movies/:id', (req, res) => { // Ruta /movies/:id
 	movies[movieIndex] = updateMovie
 	return res.status(200).json(updateMovie)
 })
-
-const PORT = process.env.PORT ?? 1234; // Puerto
-
-app.listen(PORT, () => { // Escucha en el puerto 1234	
-		console.log(`Server listening on port ${PORT}`);
-});
