@@ -1,9 +1,9 @@
 import z from 'zod';
 
 const projectSchema = z.object({
-	project_type_uid: z.number({
+	project_type_uid: z.bigint({
 		invalid_type_error:'Project type must be a number',
-	}).int(),
+	}),
 	project_user_creator_uid: z.number({
 			invalid_type_error:'Project user creator must be a number',
 			required_error:'Project user creator is required'
@@ -63,6 +63,6 @@ let dataProject2 = {
 
 //console.log(smallSchema.parse({ a: "hello", b: 123 })); // { a: "hello", b: 123 }
 
-//console.log(dataProject)
-const result = projectSchema.partial().safeParse(dataProject2)
-console.log(result.data)
+console.log(validateProject(dataProject).error)
+// const result = projectSchema.partial().safeParse(dataProject2)
+// console.log(result.data)
